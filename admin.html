@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LabKom Al Umanaa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-body);
+            line-height: 1.5;
+            padding-bottom: 40px;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-title h1 {
+            font-size: 1.25rem;
+            color: var(--text-title);
+            font-weight: 700;
+        }
+
+        .badge-admin {
+            background: #eff6ff;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        #login-screen {
+            max-width: 400px;
+            margin: 4rem auto;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-title);
+        }
+
+        input, select {
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-secondary { background: #e2e8f0; color: #334155; }
+        .btn-secondary:hover { background: #cbd5e1; }
+
+        .btn-mode {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text-title);
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-mode.active-normal {
+            background: #eff6ff;
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .btn-mode.active-sem1 {
+            background: #f0fdf4;
+            border-color: #16a34a;
+            color: #16a34a;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.775rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .dash-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .dash-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+        }
+
+        .dash-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .dash-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-title);
+            margin-bottom: 0.5rem;
+        }
+
+        .dash-desc {
+            font-size: 0.825rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .inline-lock-form {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .inline-lock-form label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .inline-lock-form input {
+            width: 220px;
+            background: white;
+        }
+
+        .badge-locked {
+            background: #1e3a8a;
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .badge-device {
+            background: #dbeafe;
+            color: #1e40af;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .status-rusak-total {
+            color: #dc2626;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mode-switcher-box {
+            background: #f8fafc;
+            border: 1px dashed var(--border);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .schedule-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            background: #f1f5f9;
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .session-card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .session-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: border-color 0.2s ease;
+        }
+
+        .session-card:hover {
+            border-color: var(--primary);
+        }
+
+        .session-info h4 {
+            font-size: 1rem;
+            color: var(--text-title);
+            margin-bottom: 4px;
+        }
+
+        .session-time {
+            font-size: 0.85rem;
+            color: #2563eb;
+            font-weight: 600;
+            background: #eff6ff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .session-status {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .session-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-grow: 1;
+            max-width: 400px;
+            justify-content: flex-end;
+        }
+
+        .session-action input {
+            flex-grow: 1;
+        }
+
+        .hidden { display: none !important; }
+
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th { background: #f8fafc; color: #475569; font-weight: 600; }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo-title">
+            <h1>LabKom Al Umanaa</h1>
+            <span class="badge-admin">Admin Panel</span>
+        </div>
+        <div>
+            <a href="dashboard.html" style="text-decoration: none; font-size: 0.875rem; color: var(--primary); font-weight: 600;">&larr; Ke Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- LOGIN -->
+        <div id="login-screen" class="card">
+            <h2 style="margin-bottom: 0.5rem;">🔒 Login Admin</h2>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.5rem;">Masukkan password untuk mengakses menu admin.</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Password Admin</label>
+                    <input type="password" id="admin-pass" placeholder="Password admin..." style="width:100%;" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Masuk</button>
+            </form>
+        </div>
+
+        <!-- MAIN DASHBOARD -->
+        <div id="admin-menu" class="hidden">
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <h2>Selamat Datang, Admin! 👋</h2>
+                <p style="color: #64748b; font-size: 0.9rem;">Silakan pilih menu panel di bawah ini untuk mengelola laboratorium.</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dash-card" onclick="openModule('booking')">
+                    <div class="dash-icon">📅</div>
+                    <div class="dash-title" style="color: #2563eb;">Data Booking</div>
+                    <div class="dash-desc">Melihat seluruh antrean peminjaman lab & menghapus jadwal yang selesai.</div>
+                </div>
+
+                <div class="dash-card" onclick="openModule('damage')">
+                    <div class="dash-icon">🛠️</div>
+                    <div class="dash-title" style="color: #d97706;">Perangkat Rusak & Lock</div>
+                    <div class="dash-desc">Blokir ID alat yang rusak & kunci akses dari peminjaman.</div>
+                </div>
+
+                <div class="dash-card" onclick="openModule('time')">
+                    <div class="dash-icon">⏰</div>
+                    <div class="dash-title" style="color: #059669;">Ubah Waktu / Jadwal</div>
+                    <div class="dash-desc">Atur ketersediaan jam KBM maupun Non-KBM laboratorium secara fleksibel.</div>
+                </div>
+
+                <div class="dash-card" onclick="openModule('inventory')">
+                    <div class="dash-icon">💻</div>
+                    <div class="dash-title" style="color: #7c3aed;">Kelola / Tambah Alat</div>
+                    <div class="dash-desc">Manajemen stok unit PC, Laptop, Chromebook, dan Proyektor.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODUL A: DATA BOOKING -->
+        <div id="module-booking" class="card hidden">
+            <div class="nav-header">
+                <div>
+                    <button class="btn btn-secondary btn-sm" onclick="backToMenu()" style="margin-bottom: 0.5rem;">&larr; Kembali ke Menu Utama</button>
+                    <h2>📅 Data Booking Masuk</h2>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="deleteAllBookings()">🗑️ Hapus Semua Booking</button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Pemesan</th>
+                            <th>Perangkat & ID Alat</th>
+                            <th>Hari/Tanggal</th>
+                            <th>Jam/Sesi</th>
+                            <th>Kelas / Rombel</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booking-tbody">
+                        <tr><td colspan="6" style="text-align: center;">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODUL B: LOCK & DAMAGE -->
+        <div id="module-damage" class="card hidden">
+            <button class="btn btn-secondary btn-sm" onclick="backToMenu()" style="margin-bottom: 1rem;">&larr; Kembali ke Menu Utama</button>
+            <h2 style="margin-bottom: 1.25rem; color: #1e3a8a;">⚙️ MANAJEMEN LOCK & PERANGKAT RUSAK</h2>
+
+            <form id="lock-form" class="inline-lock-form">
+                <label>Blokir ID Alat Baru:</label>
+                <input type="text" id="lock-id" placeholder="Misal: PC-01, LP-02, CB-05" required>
+                <button type="submit" class="btn btn-primary">🔒 Kunci & Setel Rusak</button>
+            </form>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th>ID & Status Kerusakan</th>
+                            <th>Lokasi / Bagian</th>
+                            <th>Kategori Sistem</th>
+                            <th style="text-align: center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="damage-tbody">
+                        <tr><td colspan="5" style="text-align: center;">Memuat data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODUL C: UBAH WAKTU / JADWAL -->
+        <div id="module-time" class="card hidden">
+            <button class="btn btn-secondary btn-sm" onclick="backToMenu()" style="margin-bottom: 1rem;">&larr; Kembali ke Menu Utama</button>
+            <h2 style="margin-bottom: 1.25rem; color: #059669;">⏰ Pengaturan Waktu & Jadwal Lab</h2>
+
+            <div class="mode-switcher-box">
+                <label>Pilih Mode Sistem Jadwal Aktif:</label>
+                <div class="mode-btn-group">
+                    <button id="btn-mode-normal" class="btn-mode" onclick="setSystemMode('normal')">
+                        🔄 Switch ke Jadwal Normal
+                    </button>
+                    <button id="btn-mode-sem1" class="btn-mode" onclick="setSystemMode('sem1')">
+                        🔄 Switch ke Jadwal Semester 1
+                    </button>
+                </div>
+            </div>
+
+            <div class="schedule-filters">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Kategori Penggunaan</label>
+                    <select id="sched-category" onchange="renderScheduleCards()" style="width:100%;">
+                        <option value="kbm">KBM (Kegiatan Belajar)</option>
+                        <option value="non_kbm">Non-KBM (Extracurricular/Umum)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Pilih Hari</label>
+                    <select id="sched-day-card" onchange="renderScheduleCards()" style="width:100%;">
+                        <option value="senin">Senin</option>
+                        <option value="selasa">Selasa</option>
+                        <option value="rabu">Rabu</option>
+                        <option value="kamis">Kamis</option>
+                        <option value="jumat">Jumat</option>
+                        <option value="sabtu">Sabtu</option>
+                        <option value="ahad">Ahad</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="session-cards-container" class="session-card-list"></div>
+        </div>
+
+        <!-- MODUL D: INVENTARIS ALAT -->
+        <div id="module-inventory" class="card hidden">
+            <button class="btn btn-secondary btn-sm" onclick="backToMenu()" style="margin-bottom: 1rem;">&larr; Kembali ke Menu Utama</button>
+            <h2 style="margin-bottom: 1rem;">💻 Kelola Unit Alat (PC, Laptop, Chromebook)</h2>
+            <form id="inventory-form" style="margin-bottom: 2rem;">
+                <div class="form-group">
+                    <label>Pilih Jenis / Nama Alat</label>
+                    <select id="inv-name" style="width:100%;">
+                        <option value="Laptop">Laptop</option>
+                        <option value="PC">PC</option>
+                        <option value="Chromebook">Chromebook</option>
+                        <option value="Proyektor">Proyektor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jumlah Unit Siap Pakai</label>
+                    <input type="number" id="inv-count" min="0" placeholder="Jumlah unit..." style="width:100%;" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Update Jumlah Alat</button>
+            </form>
+
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Stok Alat Terdaftar:</h3>
+            <ul id="inventory-list" style="list-style: none;">
+                <li>Memuat alat...</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = "admin123";
+
+        const TIME_SCHEDULES = {
+            kbm: {
+                normal: [
+                    { id: 1, name: "Sesi 1", time: "07.30 - 08.50" },
+                    { id: 2, name: "Sesi 2", time: "08.50 - 10.40" },
+                    { id: 3, name: "Sesi 3", time: "10.40 - 12.00" },
+                    { id: 4, name: "Sesi 4", time: "13.30 - 14.50" }
+                ],
+                sem1: [
+                    { id: 1, name: "Jam Pertama", time: "07.00 - 08.20" },
+                    { id: 2, name: "Jam Kedua", time: "08.20 - 10.00" },
+                    { id: 3, name: "Jam Ketiga", time: "10.00 - 11.20" },
+                    { id: 4, name: "Jam Keempat", time: "12.40 - 14.00" }
+                ]
+            },
+            non_kbm: {
+                normal: [
+                    { id: 1, name: "Sesi Shubuh", time: "05.00 - 06.30" },
+                    { id: 2, name: "Sesi Sore", time: "15.45 - 17.00" }
+                ],
+                sem1: [
+                    { id: 1, name: "Sesi 1", time: "14.00 - 15.15" },
+                    { id: 2, name: "Sesi 2", time: "15.35 - 17.00" }
+                ]
+            }
+        };
+
+        let activeSystemMode = "normal";
+
+        const firebaseConfig = {
+            databaseURL: "https://labkom-e0a9e-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        document.getElementById("login-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (document.getElementById("admin-pass").value === ADMIN_PASSWORD) {
+                document.getElementById("login-screen").classList.add("hidden");
+                document.getElementById("admin-menu").classList.remove("hidden");
+                loadData();
+            } else {
+                alert("Password Salah!");
+            }
+        });
+
+        function openModule(moduleName) {
+            document.getElementById("admin-menu").classList.add("hidden");
+            document.querySelectorAll('[id^="module-"]').forEach(el => el.classList.add("hidden"));
+            document.getElementById(`module-${moduleName}`).classList.remove("hidden");
+            
+            if (moduleName === 'time') {
+                fetchActiveModeAndRender();
+            }
+        }
+
+        function backToMenu() {
+            document.querySelectorAll('[id^="module-"]').forEach(el => el.classList.add("hidden"));
+            document.getElementById("admin-menu").classList.remove("hidden");
+        }
+
+        // FUNGSI LOAD DATA PERBAIKAN (AMBIL DATA SEKALI PAKAI .once UNTUK MENCEGAH INFINITE FREEZE)
+        function loadData() {
+            // DATA BOOKING
+            db.ref("data_labkom").once("value").then(snapshot => {
+                const tbody = document.getElementById("booking-tbody");
+                tbody.innerHTML = "";
+                const data = snapshot.val();
+                if (!data) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada booking masuk.</td></tr>`;
+                    return;
+                }
+                
+                let hasValidBooking = false;
+
+                Object.keys(data).forEach(key => {
+                    const item = data[key];
+
+                    if (item.kategori === "LOCKED DEVICE" || item.jenis === "RUSAK/MAINTENANCE" || (item.nama && item.nama.includes("PERANGKAT RUSAK TOTAL"))) {
+                        return;
+                    }
+
+                    hasValidBooking = true;
+                    const idAlat = item.deviceId || item.idAlat || item.pcId || item.laptopId || '-';
+                    const jenis = item.jenis || 'Perangkat';
+                    const kelas = item.kelas || item.rombel || item.kamar || '-';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${item.nama || item.namaPemesan || '-'}</strong></td>
+                            <td><span class="badge-device">${idAlat}</span> <br><small style="color:#64748b;">${jenis}</small></td>
+                            <td>${item.tanggal || '-'}</td>
+                            <td>${item.jam || item.keperluan || '-'}</td>
+                            <td>${kelas}</td>
+                            <td><button class="btn btn-danger btn-sm" onclick="deleteBooking('${key}')">Hapus</button></td>
+                        </tr>
+                    `;
+                });
+
+                if(!hasValidBooking) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Belum ada booking peminjaman aktif.</td></tr>`;
+                }
+            });
+
+            // DATA PERANGKAT RUSAK & LOCK
+            db.ref("data_labkom").once("value").then(snapshot => {
+                const tbody = document.getElementById("damage-tbody");
+                tbody.innerHTML = "";
+                const data = snapshot.val();
+                if (!data) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Belum ada perangkat dikunci.</td></tr>`;
+                    return;
+                }
+                let index = 1;
+                let hasLock = false;
+
+                Object.keys(data).forEach(key => {
+                    const item = data[key];
+                    
+                    if (item.kategori === "LOCKED DEVICE" || item.jenis === "RUSAK/MAINTENANCE" || (item.nama && item.nama.includes("PERANGKAT RUSAK TOTAL"))) {
+                        hasLock = true;
+                        const alatID = item.deviceId || item.namaAlat || 'ID-?';
+                        
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${index++}</td>
+                                <td><div class="status-rusak-total">⚠️ PERANGKAT RUSAK TOTAL (${alatID})</div></td>
+                                <td>${item.lokasi || 'Maintenance Lab'}</td>
+                                <td><span class="badge-locked">LOCKED DEVICE</span></td>
+                                <td style="text-align: center;">
+                                    <button class="btn btn-success btn-sm" onclick="deleteBooking('${key}')">Unlock & Buka</button>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                if(!hasLock) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Belum ada perangkat yang dikunci.</td></tr>`;
+                }
+            });
+
+            // INVENTARIS
+            db.ref("stok_alat").once("value").then(snapshot => {
+                const list = document.getElementById("inventory-list");
+                list.innerHTML = "";
+                const data = snapshot.val();
+                if (!data) {
+                    list.innerHTML = `<li>Belum ada data alat.</li>`;
+                    return;
+                }
+                Object.keys(data).forEach(name => {
+                    list.innerHTML += `
+                        <li style="padding:8px 0; border-bottom:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+                            <span><strong>${name}</strong>: ${data[name]} Unit</span>
+                            <button class="btn btn-danger btn-sm" onclick="deleteInventory('${name}')">Hapus</button>
+                        </li>
+                    `;
+                });
+            });
+        }
+
+        function fetchActiveModeAndRender() {
+            db.ref("system_config/active_mode").once("value", snapshot => {
+                activeSystemMode = snapshot.val() || "normal";
+                updateModeButtonUI();
+                renderScheduleCards();
+            });
+        }
+
+        function setSystemMode(mode) {
+            if (confirm(`Yakin ingin mengubah seluruh mode jadwal sistem ke ${mode === 'normal' ? 'Jadwal Normal' : 'Jadwal Semester 1'}?`)) {
+                db.ref("system_config/active_mode").set(mode).then(() => {
+                    activeSystemMode = mode;
+                    updateModeButtonUI();
+                    renderScheduleCards();
+                    alert(`Sistem berhasil di-switch ke ${mode === 'normal' ? 'Jadwal Normal' : 'Jadwal Semester 1'}!`);
+                });
+            }
+        }
+
+        function updateModeButtonUI() {
+            const btnNormal = document.getElementById("btn-mode-normal");
+            const btnSem1 = document.getElementById("btn-mode-sem1");
+
+            btnNormal.className = "btn-mode";
+            btnSem1.className = "btn-mode";
+
+            if (activeSystemMode === "normal") {
+                btnNormal.classList.add("active-normal");
+                btnNormal.innerHTML = "✅ Mode Aktif: Jadwal Normal";
+                btnSem1.innerHTML = "🔄 Switch ke Jadwal Semester 1";
+            } else {
+                btnSem1.classList.add("active-sem1");
+                btnSem1.innerHTML = "✅ Mode Aktif: Jadwal Semester 1";
+                btnNormal.innerHTML = "🔄 Switch ke Jadwal Normal";
+            }
+        }
+
+        function renderScheduleCards() {
+            const category = document.getElementById("sched-category").value;
+            const day = document.getElementById("sched-day-card").value;
+            const container = document.getElementById("session-cards-container");
+
+            const sessions = TIME_SCHEDULES[category][activeSystemMode];
+            const dbPath = `schedules/${activeSystemMode}/${category}/${day}`;
+
+            container.innerHTML = `<p style="text-align:center; color:#64748b;">Memuat data sesi...</p>`;
+
+            db.ref(dbPath).once("value", snapshot => {
+                const currentData = snapshot.val() || {};
+                container.innerHTML = "";
+
+                sessions.forEach(session => {
+                    const statusText = currentData[session.id] || "";
+                    const isOccupied = statusText.trim() !== "";
+
+                    const card = document.createElement("div");
+                    card.className = "session-card";
+                    card.innerHTML = `
+                        <div class="session-info">
+                            <h4>📌 ${session.name}</h4>
+                            <span class="session-time">🕒 ${session.time} WIB</span>
+                            <div class="session-status">
+                                Status: ${isOccupied 
+                                    ? `<span style="color:#dc2626;">🔴 ${statusText}</span>` 
+                                    : `<span style="color:#16a34a;">🟢 Kosong / Ready</span>`}
+                            </div>
+                        </div>
+                        <div class="session-action">
+                            <input type="text" id="input-sesi-${session.id}" value="${statusText}" placeholder="Isi KBM / Keterangan...">
+                            <button class="btn btn-primary btn-sm" onclick="saveSessionStatus('${category}', '${day}', ${session.id})">Simpan</button>
+                            ${isOccupied ? `<button class="btn btn-danger btn-sm" onclick="clearSessionStatus('${category}', '${day}', ${session.id})">Reset</button>` : ''}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function saveSessionStatus(category, day, sessionId) {
+            const val = document.getElementById(`input-sesi-${sessionId}`).value.trim();
+            db.ref(`schedules/${activeSystemMode}/${category}/${day}/${sessionId}`).set(val).then(() => {
+                alert("Status sesi berhasil disimpan!");
+                renderScheduleCards();
+            });
+        }
+
+        function clearSessionStatus(category, day, sessionId) {
+            db.ref(`schedules/${activeSystemMode}/${category}/${day}/${sessionId}`).remove().then(() => {
+                alert("Status sesi dikosongkan!");
+                renderScheduleCards();
+            });
+        }
+
+        function deleteBooking(key) { 
+            if (confirm("Hapus / Buka Kunci data ini?")) {
+                db.ref("data_labkom/" + key).remove().then(() => loadData());
+            } 
+        }
+
+        function deleteAllBookings() { 
+            if (confirm("YAKIN HAPUS SEMUA DATA BOOKING?")) {
+                db.ref("data_labkom").remove().then(() => loadData());
+            } 
+        }
+
+        function deleteInventory(name) { 
+            if (confirm(`Hapus ${name}?`)) {
+                db.ref("stok_alat/" + name).remove();
+                db.ref("inventory/" + name).remove().then(() => loadData());
+            }
+        }
+
+        document.getElementById("lock-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const lockId = document.getElementById("lock-id").value.trim().toUpperCase();
+            if (!lockId) return;
+
+            const lockKey = "LOCK-" + Date.now();
+
+            db.ref("data_labkom/" + lockKey).set({
+                id: lockKey,
+                deviceId: lockId,
+                nama: "⚠️ PERANGKAT RUSAK TOTAL (" + lockId + ")",
+                jenis: "RUSAK/MAINTENANCE",
+                status: "PERANGKAT RUSAK TOTAL",
+                kategori: "LOCKED DEVICE",
+                lokasi: "Maintenance Lab",
+                tanggal: "PERMANENT",
+                jam: "PERMANENT"
+            }).then(() => {
+                alert(`Unit ${lockId} berhasil dikunci! Semua portal booking kini otomatis menampilkan status RUSAK (Abu-abu).`);
+                document.getElementById("lock-id").value = "";
+                loadData();
+            });
+        });
+
+        document.getElementById("inventory-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("inv-name").value;
+            const count = parseInt(document.getElementById("inv-count").value);
+
+            db.ref(`stok_alat/${name}`).set(count);
+            
+            db.ref(`inventory/${name}`).set({ count: count }).then(() => {
+                alert(`Berhasil memperbarui jumlah ${name} menjadi ${count} unit!`);
+                document.getElementById("inv-count").value = "";
+                loadData();
+            });
+        });
+    </script>
+</body>
+</html>
