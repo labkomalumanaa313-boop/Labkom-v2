@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Booking PC Non-KBM - LabKom</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f4f8; padding-bottom: 40px; }
+        header { background: #059669; color: white; text-align: center; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        header h1 { font-size: 22px; margin-bottom: 5px; }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        
+        .btn-back { display: inline-block; text-decoration: none; background: #657786; color: white; padding: 8px 15px; border-radius: 5px; font-weight: bold; margin-bottom: 25px; font-size: 14px; transition: 0.2s; }
+        .btn-back:hover { background: #4b5863; }
+
+        .step-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; text-align: center; }
+        .step-title { font-size: 18px; font-weight: bold; color: #059669; margin-bottom: 20px; }
+        
+        .selection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; justify-content: center; }
+        .select-btn { padding: 15px 10px; border: 2px solid #e2e8f0; background: #f8fafc; color: #4a5568; font-weight: bold; font-size: 15px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
+        .select-btn:hover { border-color: #059669; background: #ecfdf5; color: #059669; }
+        .select-btn.active { background: #059669; color: white; border-color: #059669; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2); }
+
+        .mode-status-bar { background: #ecfdf5; color: #065f46; padding: 10px 15px; border-radius: 8px; font-weight: bold; font-size: 14px; margin-bottom: 20px; text-align: center; border: 1px solid #a7f3d0; }
+
+        .status-jalur { background: #ecfdf5; color: #065f46; padding: 12px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 25px; font-size: 16px; border: 1px dashed #059669; }
+
+        #areaDenahTotal { display: none; }
+        .lab-screen { background: #cbd5e0; text-align: center; padding: 12px; font-weight: bold; color: #2d3748; border-radius: 5px; margin-bottom: 20px; letter-spacing: 1px; }
+        
+        .select-all-bar { display: flex; justify-content: center; gap: 12px; margin-bottom: 25px; }
+        .btn-select-all { background: #27ae60; color: white; border: none; padding: 10px 20px; font-weight: bold; font-size: 14px; border-radius: 6px; cursor: pointer; transition: 0.2s; box-shadow: 0 3px 8px rgba(39, 174, 96, 0.2); }
+        .btn-select-all:hover { background: #219653; transform: translateY(-1px); }
+        .btn-deselect-all { background: #e74c3c; color: white; border: none; padding: 10px 20px; font-weight: bold; font-size: 14px; border-radius: 6px; cursor: pointer; transition: 0.2s; box-shadow: 0 3px 8px rgba(231, 76, 60, 0.2); }
+        .btn-deselect-all:hover { background: #c0392b; transform: translateY(-1px); }
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        
+        .pc-box { background: #2ecc71; color: white; text-align: center; padding: 25px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; position: relative; }
+        .pc-box:hover { transform: scale(1.05); }
+        .pc-box.selected { background: #f1c40f; color: #2c3e50; border: 3px solid #d35400; }
+        .pc-box.booked { background: #e74c3c; cursor: not-allowed; }
+        .pc-box.booked:hover { transform: none; }
+        
+        .pc-box.broken { background: #7f8c8d; cursor: not-allowed; opacity: 0.8; }
+        .pc-box.broken:hover { transform: none; }
+
+        .pc-icon { display: block; font-size: 24px; margin-bottom: 5px; }
+        .action-bar { text-align: center; margin: 25px 0; display: none; }
+        .btn-bulk-book { background: #e67e22; color: white; border: none; padding: 15px 35px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3); transition: 0.2s; }
+        .btn-bulk-book:hover { background: #d35400; transform: translateY(-2px); }
+
+        .legend { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 14px; }
+        .color-box { width: 20px; height: 20px; border-radius: 4px; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 999; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box { background: white; width: 400px; padding: 30px; border-radius: 12px; }
+        .modal-box h2 { color: #059669; margin-bottom: 20px; font-size: 20px; border-bottom: 2px solid #f0f4f8; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #4a5568; font-size: 14px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 15px; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-submit { flex: 1; background: #059669; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-cancel { background: #e2e8f0; color: #4a5568; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>JADWAL PC - JALUR NON-KBM (ONLINE CLOUD)</h1>
+        <p>Pondok Pesantren Modern Al Umanaa</p>
+    </header>
+
+    <div class="container">
+        <a href="dashboard.html" class="btn-back">⬅ Kembali ke Dashboard</a>
+
+        <div id="modeStatusBox" class="mode-status-bar">
+            🔄 Memuat Mode Sistem...
+        </div>
+
+        <div class="step-container" id="stepHariBox">
+            <div class="step-title">📍 LANGKAH 1: SILAKAN PILIH HARI</div>
+            <div class="selection-grid">
+                <button class="select-btn" onclick="pilihHari('Senin')">SENIN</button>
+                <button class="select-btn" onclick="pilihHari('Selasa')">SELASA</button>
+                <button class="select-btn" onclick="pilihHari('Rabu')">RABU</button>
+                <button class="select-btn" onclick="pilihHari('Kamis')">KAMIS</button>
+                <button class="select-btn" onclick="pilihHari('Jumat')">JUMAT</button>
+                <button class="select-btn" onclick="pilihHari('Sabtu')">SABTU</button>
+                <button class="select-btn" onclick="pilihHari('Minggu')">MINGGU</button>
+            </div>
+        </div>
+
+        <div class="step-container" id="stepJamBox" style="display: none;">
+            <div class="step-title" id="stepJamTitle">📍 LANGKAH 2: PILIH SESI MANDIRI</div>
+            <div class="selection-grid" id="wadahTombolSesi"></div>
+            <button onclick="resetSesi()" style="margin-top: 15px; background: none; border: none; color: #e53935; font-weight: bold; cursor: pointer; text-decoration: underline;">🔄 Ganti Hari Lain</button>
+        </div>
+
+        <div class="status-jalur" id="textStatusSesi" style="display: none;"></div>
+
+        <div id="areaDenahTotal">
+            <div class="lab-screen" id="labScreenTitle">MEJA GURU DEPAN</div>
+            
+            <div class="select-all-bar">
+                <button class="btn-select-all" onclick="pilihSemuaPCKosong()">✅ Pilih Semua PC Kosong</button>
+                <button class="btn-deselect-all" onclick="batalkanSemuaPilihan()">❌ Batalkan Pilihan</button>
+            </div>
+
+            <div class="grid-container" id="pcGrid"></div>
+
+            <div class="action-bar" id="actionBarMasal">
+                <button class="btn-bulk-book" onclick="bukaFormMasal()">👉 Lanjutkan Booking (<span id="countTerpilih">0</span>) PC Sekaligus</button>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item"><div class="color-box" style="background: #2ecc71;"></div><span>Hijau = Kosong</span></div>
+                <div class="legend-item"><div class="color-box" style="background: #f1c40f;"></div><span>Kuning = Pilihan Anda</span></div>
+                <div class="legend-item"><div class="color-box" style="background: #e74c3c;"></div><span>Merah = Sudah Terisi</span></div>
+                <div class="legend-item"><div class="color-box" style="background: #7f8c8d;"></div><span>Abu = Rusak / Lock</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalBooking">
+        <div class="modal-box">
+            <h2>Form Booking Borongan Non-KBM</h2>
+            <div class="form-group"><label>Hari & Sesi</label><input type="text" id="inputHariJam" readonly style="background:#f1f5f9; font-weight:bold; color:#059669;"></div>
+            <div class="form-group"><label>PC Terpilih</label><textarea id="inputListPc" readonly style="background:#f1f5f9; font-weight:bold; color:#d35400; height:50px; resize:none; font-family:monospace;"></textarea></div>
+            <div class="form-group"><label>Nama Lengkap / Kelompok Santri</label><input type="text" id="inputNama" placeholder="Masukkan nama peminjam"></div>
+            <div class="form-group"><label>Kelas / Kamar / Asrama</label><input type="text" id="inputKelas" placeholder="Contoh: Kamar Abu Bakar"></div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-cancel" onclick="tutupForm()">Batal</button>
+                <button type="button" class="btn-submit" onclick="simpanBookingMasal()">PROSES BOOKING SEMUA</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAk0_7KNfj9XBJ9qfjck_N8ZwdwxlRMYNw",
+            authDomain: "labkom-e0a9e.firebaseapp.com",
+            databaseURL: "https://labkom-e0a9e-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "labkom-e0a9e",
+            storageBucket: "labkom-e0a9e.firebasestorage.app",
+            messagingSenderId: "737095718555",
+            appId: "1:737095718555:web:4664f63510368470f4d83e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        window.databaseRef = ref(database, 'data_labkom');
+        window.firebaseSet = set;
+        window.firebaseRefFunc = ref;
+        window.firebaseDb = database;
+
+        // BACA MODE SISTEM REALTIME
+        const modeRef = ref(database, 'system_config/active_mode');
+        onValue(modeRef, (snapshot) => {
+            window.activeMode = snapshot.val() || "normal";
+            const modeText = window.activeMode === "sem1" ? "Semester 1" : "Normal";
+            document.getElementById('modeStatusBox').innerHTML = `📌 <strong>Mode Sistem Saat Ini:</strong> Jadwal Non-KBM (${modeText})`;
+            if(window.hariDipilih) {
+                window.renderJamButtons();
+            }
+        });
+
+        // BACA STOK PC DINAMIS REALTIME DARI ADMIN
+        const stokRef = ref(database, 'stok_alat/PC');
+        onValue(stokRef, (snapshot) => {
+            window.stokPC = parseInt(snapshot.val()) || 26; // Default 26 unit jika belum terisi di Admin
+            if(window.hariDipilih && window.jamDipilih) {
+                window.renderDenahPC();
+            }
+        });
+
+        // BACA DATA BOOKING & STATUS RUSAK REALTIME
+        onValue(window.databaseRef, (snapshot) => {
+            const data = snapshot.val();
+            window.listBooking = data ? Object.values(data) : [];
+            if(window.hariDipilih && window.jamDipilih) {
+                window.renderDenahPC();
+            }
+        });
+    </script>
+
+    <script>
+        window.hariDipilih = ""; 
+        window.jamDipilih = ""; 
+        window.pcTerpilih = []; 
+        window.listBooking = [];
+        window.activeMode = "normal";
+        window.stokPC = 26; // Default fallback jika belum ada data di Firebase
+
+        const NON_KBM_SCHEDULES = {
+            normal: [
+                { title: "Sesi Shubuh (05.00-06.30)", full: "Non-KBM Sesi Shubuh (05.00 - 06.30)" },
+                { title: "Sesi Sore (15.45-17.00)", full: "Non-KBM Sesi Sore (15.45 - 17.00)" }
+            ],
+            sem1: [
+                { title: "Sesi 1 (14.00-15.15)", full: "Non-KBM Sesi 1 (14.00 - 15.15)" },
+                { title: "Sesi 2 (15.35-17.00)", full: "Non-KBM Sesi 2 (15.35 - 17.00)" }
+            ],
+            jumat: [
+                { title: "Sesi 1 (07.30-10.30)", full: "Non-KBM Sesi 1 (07.30 - 10.30)" },
+                { title: "Sesi 2 (13.30-15.00)", full: "Non-KBM Sesi 2 (13.30 - 15.00)" },
+                { title: "Sesi 3 (15.45-17.00)", full: "Non-KBM Sesi 3 (15.45 - 17.00)" }
+            ]
+        };
+
+        function pilihHari(hari) {
+            window.jamDipilih = ""; window.pcTerpilih = [];
+            document.getElementById('areaDenahTotal').style.display = 'none';
+            document.getElementById('textStatusSesi').style.display = 'none';
+            document.getElementById('actionBarMasal').style.display = 'none';
+            document.querySelectorAll('#stepHariBox .select-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.toLowerCase() === hari.toLowerCase());
+            });
+
+            window.hariDipilih = hari;
+            document.getElementById('stepJamTitle').innerText = `📍 LANGKAH 2: PILIH SESI MANDIRI HARI ${hari.toUpperCase()}`;
+            document.getElementById('stepJamBox').style.display = 'block';
+            window.renderJamButtons();
+        }
+
+        window.renderJamButtons = function() {
+            const container = document.getElementById('wadahTombolSesi');
+            container.innerHTML = '';
+            
+            let listJam = window.hariDipilih === "Jumat" 
+                ? NON_KBM_SCHEDULES.jumat 
+                : (NON_KBM_SCHEDULES[window.activeMode] || NON_KBM_SCHEDULES.normal);
+
+            listJam.forEach(jam => {
+                const btn = document.createElement('button');
+                btn.className = 'select-btn jam-btn';
+                if (window.jamDipilih === jam.full) {
+                    btn.classList.add('active');
+                }
+                btn.innerText = jam.title;
+                btn.onclick = function() { pilihJam(jam.full); };
+                container.appendChild(btn);
+            });
+        };
+
+        function pilihJam(jamFormat) {
+            window.jamDipilih = jamFormat; window.pcTerpilih = [];
+            document.getElementById('actionBarMasal').style.display = 'none';
+            
+            window.renderJamButtons();
+
+            const statusBox = document.getElementById('textStatusSesi');
+            statusBox.innerText = `Sesi Aktif: Hari ${window.hariDipilih.toUpperCase()} ➔ ${jamFormat.replace('Non-KBM ', '')}`;
+            statusBox.style.display = 'block';
+            document.getElementById('areaDenahTotal').style.display = 'block';
+            window.renderDenahPC();
+        }
+
+        function resetSesi() {
+            window.hariDipilih = ""; window.jamDipilih = ""; window.pcTerpilih = [];
+            document.getElementById('stepJamBox').style.display = 'none';
+            document.getElementById('areaDenahTotal').style.display = 'none';
+            document.getElementById('textStatusSesi').style.display = 'none';
+            document.getElementById('actionBarMasal').style.display = 'none';
+            document.querySelectorAll('#stepHariBox .select-btn').forEach(btn => btn.classList.remove('active'));
+        }
+
+        // Pengecekan Rusak / Lock dari Admin
+        function cekPcRusak(idPC) {
+            return window.listBooking.find(b => {
+                let str = JSON.stringify(b).toUpperCase();
+                return str.includes(idPC.toUpperCase()) && (
+                    str.includes("RUSAK") || 
+                    str.includes("LOCK") || 
+                    str.includes("MAINTENANCE")
+                );
+            });
+        }
+
+        window.renderDenahPC = function() {
+            const grid = document.getElementById('pcGrid');
+            grid.innerHTML = '';
+
+            // Menggunakan window.stokPC hasil sinkronisasi realtime dari Admin
+            for (let i = 1; i <= window.stokPC; i++) {
+                let idPC = "PC-" + String(i).padStart(2, '0');
+                
+                let isPermanentBroken = cekPcRusak(idPC);
+                let detailBooking = window.listBooking.find(b => 
+                    b.deviceId === idPC && b.tanggal === window.hariDipilih && b.jam === window.jamDipilih
+                );
+
+                let pcDiv = document.createElement('div');
+                
+                if (isPermanentBroken) {
+                    pcDiv.className = 'pc-box broken';
+                    pcDiv.innerHTML = `<span class="pc-icon">🛠️</span>${idPC}<br><small style="font-size:11px;">RUSAK</small>`;
+                    pcDiv.onclick = function() { alert(`${idPC} sedang dikunci / rusak oleh Admin.`); };
+                } else if (detailBooking) {
+                    pcDiv.className = 'pc-box booked';
+                    pcDiv.innerHTML = `<span class="pc-icon">🔒</span>${idPC}<br><small style="font-size:11px; font-weight:normal;">${detailBooking.nama}</small>`;
+                    pcDiv.onclick = function() { alert(`${idPC} sudah terisi.`); };
+                } else {
+                    let isSelected = window.pcTerpilih.includes(idPC);
+                    pcDiv.className = isSelected ? 'pc-box selected' : 'pc-box';
+                    pcDiv.innerHTML = isSelected ? `<span class="pc-icon">✅</span>${idPC}<br><small style="font-size:11px;">Pilihan</small>` : `<span class="pc-icon">🖥️</span>${idPC}<br><small style="font-size:11px;opacity:0.7;">Kosong</small>`;
+                    pcDiv.onclick = function() { togglePilihPc(idPC); };
+                }
+                grid.appendChild(pcDiv);
+            }
+        }
+
+        function pilihSemuaPCKosong() {
+            window.pcTerpilih = [];
+            for (let i = 1; i <= window.stokPC; i++) {
+                let idPC = "PC-" + String(i).padStart(2, '0');
+                let isPermanentBroken = cekPcRusak(idPC);
+                let detailBooking = window.listBooking.find(b => b.deviceId === idPC && b.tanggal === window.hariDipilih && b.jam === window.jamDipilih);
+                
+                if (!isPermanentBroken && !detailBooking) {
+                    window.pcTerpilih.push(idPC);
+                }
+            }
+            updateBarAksi();
+            window.renderDenahPC();
+        }
+
+        function batalkanSemuaPilihan() {
+            window.pcTerpilih = [];
+            updateBarAksi();
+            window.renderDenahPC();
+        }
+
+        function togglePilihPc(idPC) {
+            if (window.pcTerpilih.includes(idPC)) {
+                window.pcTerpilih = window.pcTerpilih.filter(item => item !== idPC);
+            } else {
+                window.pcTerpilih.push(idPC);
+            }
+            updateBarAksi();
+            window.renderDenahPC();
+        }
+
+        function updateBarAksi() {
+            const countSpan = document.getElementById('countTerpilih');
+            countSpan.innerText = window.pcTerpilih.length;
+            document.getElementById('actionBarMasal').style.display = window.pcTerpilih.length > 0 ? 'block' : 'none';
+        }
+
+        function bukaFormMasal() {
+            document.getElementById('inputHariJam').value = `${window.hariDipilih}, ${window.jamDipilih.replace('Non-KBM ', '')}`;
+            document.getElementById('inputListPc').value = window.pcTerpilih.sort().join(', ');
+            document.getElementById('modalBooking').classList.add('active');
+        }
+
+        function tutupForm() { 
+            document.getElementById('modalBooking').classList.remove('active'); 
+            document.getElementById('inputNama').value = ""; document.getElementById('inputKelas').value = ""; 
+        }
+
+        function simpanBookingMasal() {
+            const nama = document.getElementById('inputNama').value;
+            const kelas = document.getElementById('inputKelas').value;
+            if(!nama || !kelas) { alert("Nama & Kamar/Kelas wajib diisi!"); return; }
+
+            window.pcTerpilih.forEach(pcId => {
+                const uniqueId = "BKG-" + Date.now() + "-" + pcId;
+                window.firebaseSet(window.firebaseRefFunc(window.firebaseDb, 'data_labkom/' + uniqueId), {
+                    id: uniqueId, nama: nama, kelas: kelas, jenis: "PC (Non-KBM)", deviceId: pcId, tanggal: window.hariDipilih, jam: window.jamDipilih
+                });
+            });
+
+            alert(`SUKSES ONLINE! ${window.pcTerpilih.length} komputer berhasil di-booking!`);
+            window.pcTerpilih = []; document.getElementById('actionBarMasal').style.display = 'none';
+            tutupForm(); window.renderDenahPC();
+        }
+    </script>
+</body>
+</html>

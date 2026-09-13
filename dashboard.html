@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Labkom</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        p.subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 220px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .card h2 {
+            font-size: 18px;
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+        .card p {
+            font-size: 13px;
+            color: #666;
+        }
+        .admin-card h2 {
+            color: #dc3545; /* Warna beda khusus Admin */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Menu Utama Labkom</h1>
+    <p class="subtitle">Pilih layanan yang ingin Anda akses:</p>
+
+    <div class="container">
+        <!-- Booking Gadget KBM -->
+        <a href="booking_gadget_kbm.html" class="card">
+            <h2>Booking Gadget KBM</h2>
+            <p>Layanan peminjaman gadget untuk KBM</p>
+        </a>
+
+        <!-- Booking Gadget Non-KBM -->
+        <a href="booking_gadget_nonkbm.html" class="card">
+            <h2>Booking Gadget Non-KBM</h2>
+            <p>Layanan peminjaman gadget di luar KBM</p>
+        </a>
+
+        <!-- Booking PC KBM -->
+        <a href="booking_pc_kbm.html" class="card">
+            <h2>Booking PC KBM</h2>
+            <p>Layanan peminjaman PC untuk KBM</p>
+        </a>
+
+        <!-- Booking PC Non-KBM -->
+        <a href="booking_pc_nonkbm.html" class="card">
+            <h2>Booking PC Non-KBM</h2>
+            <p>Layanan peminjaman PC di luar KBM</p>
+        </a>
+
+        <!-- Halaman Admin -->
+        <a href="admin.html" class="card admin-card">
+            <h2>Panel Admin</h2>
+            <p>Pengelolaan data dan sistem</p>
+        </a>
+    </div>
+
+</body>
+</html>

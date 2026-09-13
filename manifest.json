@@ -1,0 +1,22 @@
+{
+  "name": "LabKom Al Umanaa",
+  "short_name": "LabKom",
+  "description": "Sistem Informasi Booking Perangkat LabKom Al Umanaa v2.0",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#1565c0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./logo.png.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./logo.png.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
