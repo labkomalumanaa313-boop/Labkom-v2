@@ -619,9 +619,8 @@
             document.getElementById("admin-menu").classList.remove("hidden");
         }
 
-        // FUNGSI LOAD DATA PERBAIKAN (AMBIL DATA SEKALI PAKAI .once UNTUK MENCEGAH INFINITE FREEZE)
         function loadData() {
-            // DATA BOOKING
+            // DATA BOOKING (Ganti ke .once biar anti-freeze)
             db.ref("data_labkom").once("value").then(snapshot => {
                 const tbody = document.getElementById("booking-tbody");
                 tbody.innerHTML = "";
@@ -662,7 +661,7 @@
                 }
             });
 
-            // DATA PERANGKAT RUSAK & LOCK
+            // DATA PERANGKAT RUSAK & LOCK (Ganti ke .once biar anti-freeze)
             db.ref("data_labkom").once("value").then(snapshot => {
                 const tbody = document.getElementById("damage-tbody");
                 tbody.innerHTML = "";
@@ -700,7 +699,7 @@
                 }
             });
 
-            // INVENTARIS
+            // INVENTARIS (Ganti ke .once biar anti-freeze)
             db.ref("stok_alat").once("value").then(snapshot => {
                 const list = document.getElementById("inventory-list");
                 list.innerHTML = "";
